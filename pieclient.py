@@ -48,8 +48,7 @@ def connect(user_provider, user_email, user_password):
         print("Connection established")
         print("You can now use the extra commands")
         while 1:
-            print(command:)
-            user_input = input()
+            user_input = input("Insert your command: ")
             if user_input in "send":
                 receiver_email, message = send()
                 server.sendmail(user_email, receiver_email, message)
@@ -61,7 +60,7 @@ def connect(user_provider, user_email, user_password):
 print("Welcome to PieCLIent!\nType help for a list of commands")
 
 while 1:
-    user_input = input() 
+    user_input = input("Insert your command: ") 
     if user_input in "help":
         print_help()
 
