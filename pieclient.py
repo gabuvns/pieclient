@@ -2,6 +2,7 @@
 #Email client with python3
 
 
+from os import system, name
 import ssl, smtplib
 
 def get_user_credentials():
@@ -18,6 +19,13 @@ def print_help():
     print("send - sends an email")
     print("list - lists your emails")
 
+def clear_screen():
+   if name == 'nt':
+      _ = system('cls')
+   # for mac and linux(here, os.name is 'posix')
+   else:
+      _ = system('clear')
+
 def send():
     receiver_email = input("Receiver email: ")
     subject = input("E-mail subject: ")
@@ -26,20 +34,20 @@ def send():
     #Cleaning the email before sending   
     #message = message.encode('ascii', 'ignore').decode('ascii')
 
-    message = "Subject: " + subject + "\n\n" + user_message
-    print("SUA MENSAGEM:\n\n ")
-    print(message)
-    print("\n\n\n\n\n")
+    message = 'Subject: {}\n\n{}'.format(subject, user_message)
+    
     return receiver_email, user_message
 
 
 def connect(user_provider, user_email, user_password):
 
-    if user_provider == "gmail":
+    if user_provider in "gmail":
+        print("Gmail Selected")
         # Para ssl
         port = 465
         #starting a secure connection
         context = ssl.create_default_context()
+  
     else:
         print("Using gmail as default")
         port = 465
@@ -47,6 +55,7 @@ def connect(user_provider, user_email, user_password):
 
 
     print("Opening connection")
+
     with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
         server.login(user_email, user_password)
 
@@ -73,6 +82,9 @@ while 1:
         user_password = "Senhamuitoseguratp2@"
         user_provider = "gmail"
         connect(user_provider, user_email, user_password)
+    
+    elif  user_input in "clear":
+        clear_screen()
 
     elif user_input in "quit":
         print("Have a good day")
