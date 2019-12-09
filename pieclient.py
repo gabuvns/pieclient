@@ -27,10 +27,14 @@ def send():
     #message = message.encode('ascii', 'ignore').decode('ascii')
 
     message = "Subject: " + subject + "\n\n" + user_message
+    print("SUA MENSAGEM:\n\n ")
+    print(message)
+    print("\n\n\n\n\n")
     return receiver_email, user_message
 
 
 def connect(user_provider, user_email, user_password):
+
     if user_provider == "gmail":
         # Para ssl
         port = 465
@@ -45,6 +49,7 @@ def connect(user_provider, user_email, user_password):
     print("Opening connection")
     with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
         server.login(user_email, user_password)
+
         print("Connection established")
         print("You can now use the extra commands")
         while 1:
@@ -55,8 +60,6 @@ def connect(user_provider, user_email, user_password):
                 print("Email Sent")
 
 
-
-
 print("Welcome to PieCLIent!\nType help for a list of commands")
 
 while 1:
@@ -65,7 +68,10 @@ while 1:
         print_help()
 
     elif user_input in "connection":
-        user_provider, user_email, user_password = get_user_credentials()
+        # user_provider, user_email, user_password = get_user_credentials()
+        user_email = "tempacc767@gmail.com"
+        user_password = "Senhamuitoseguratp2@"
+        user_provider = "gmail"
         connect(user_provider, user_email, user_password)
 
     elif user_input in "quit":
