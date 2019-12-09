@@ -31,12 +31,12 @@ def send():
     subject = input("E-mail subject: ")
     user_message = input("Digite sua mensagem: ")
 
-    #Cleaning the email before sending   
-    #message = message.encode('ascii', 'ignore').decode('ascii')
+    # message = "From:" + user_email + "\n"
+    # message += "To: " + receiver_email + "\n"
+    message = """Subject: """ + subject  
 
-    message = 'Subject: {}\n\n{}'.format(subject, user_message)
     
-    return receiver_email, user_message
+    return receiver_email, message
 
 
 def connect(user_provider, user_email, user_password):
