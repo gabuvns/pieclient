@@ -3,9 +3,7 @@
 
 from os import system, name
 import ssl, smtplib, inspect, imaplib, getpass, email
-import poplib
-import string, random
-import io
+
 
 
 def detect_input(user_input):
