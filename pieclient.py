@@ -2,7 +2,7 @@
 #Email client with python3
 
 from os import system, name
-import ssl, smtplib, inspect, imaplib, getpass
+import ssl, smtplib, inspect, imaplib, getpass, email
 
 
 def detect_input(user_input):
@@ -73,6 +73,34 @@ def send():
     return receiver_email, message
 
 
+def list(user_email, user_password, port_imap):
+    print("Opening IMAP connection")
+    
+    imap_connect = imaplib.IMAP4_SSL("imap.gmail.com", port_imap)
+    imap_connect.login(user_email, user_password)
+
+    print("IMAP connection established")
+
+    imap_connect.select('inbox')
+
+    type, data = imap_connect.search(None, 'ALL')
+    mail_ids = data[0]
+
+    id_list = mail_ids.split()   
+    first_email_id = int(id_list[0])
+    latest_email_id = int(id_list[-1])
+
+    for i in range(latest_email_id,first_email_id, -1):
+        typ, data = imap_connect.fetch(i, '(RFC822)' )
+        print("AQUI")
+        for response_part in data:
+            if isinstance(response_part, tuple):
+                msg = email.message_from_string(response_part[1])
+                email_subject = msg['subject']
+                email_from = msg['from']
+                print ('From : ' + email_from + '\n')
+                print ('Subject : ' + email_subject + '\n')
+
 def connect(user_provider, user_email, user_password):
 
     if user_provider in "gmail":
@@ -90,17 +118,13 @@ def connect(user_provider, user_email, user_password):
 
         context = ssl.create_default_context()
 
-
     print("Opening SMTP connection")
 
     with smtplib.SMTP_SSL("smtp.gmail.com", port_smtp, context=context) as server:
         server.login(user_email, user_password)
 
         print("SMTP connection established")
-        print("Opening IMAP connection")
-        
-        imap_connect = imaplib.IMAP4_SSL("imap.gmail.com", port_imap)
-        print("IMAP connection established")
+       
         print("You can now use the extra commands")
         while 1:
             user_input = input("Insert your command: ")
@@ -110,11 +134,11 @@ def connect(user_provider, user_email, user_password):
                 receiver_email, message = send()
                 server.sendmail(user_email, receiver_email, message)
                 print("Email Sent")
+            # List Emails
             if can_command == 2:
-                    typ_imap, data_imap = imap_connect.search(None, 'ALL')  
-                    for num in data_imap[0].split():
-                        typ_imap, data_imap = imap_connect.search(num, data_imap[0][1])
-                        print ("Message %s\n%s\n" % (num, data_imap[0][1]))
+                list(user_email, user_password, port_imap)
+                  
+                    
 
 
 print("Welcome to PieCLIent!\nType help for a list of commands")
