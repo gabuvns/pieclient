@@ -34,7 +34,6 @@ def detect_input(user_input):
     else:
         print("Invalid Command")
 
-
 def get_user_credentials():
     user_provider = input("Type your provider: ")
     user_email = input("Type your email: ")
