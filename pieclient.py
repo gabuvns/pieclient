@@ -2,7 +2,7 @@
 #Email client with python3
 
 from os import system, name
-import ssl, smtplib, inspect
+import ssl, smtplib, inspect, imaplib, getpass
 
 
 def detect_input(user_input):
@@ -30,6 +30,11 @@ def detect_input(user_input):
             return 1;
         else:
             print("You must first login to use this command")
+    elif user_input in "list":
+        if inspect.stack()[1][3] == "connect":
+            return 2;
+        else:
+            print("You must first login to use this command")
     
     else:
         print("Invalid Command")
@@ -42,6 +47,7 @@ def get_user_credentials():
 
 def print_help():
     print("connect - get user information")
+    print("set - define if it will use POP3 or IMAP, impap is used by default")
     print("clear - clears the screen" )
     print("exit - quits de program")
     print("You must first connect for the following commands:")
@@ -72,22 +78,29 @@ def connect(user_provider, user_email, user_password):
     if user_provider in "gmail":
         print("Gmail Selected")
         # Para ssl
-        port = 465
+        port_smtp = 465
+        port_imap = 993
         #starting a secure connection
         context = ssl.create_default_context()
   
     else:
         print("Using gmail as default")
-        port = 465
+        port_smtp = 465
+        port_imap = 993
+
         context = ssl.create_default_context()
 
 
-    print("Opening connection")
+    print("Opening SMTP connection")
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+    with smtplib.SMTP_SSL("smtp.gmail.com", port_smtp, context=context) as server:
         server.login(user_email, user_password)
 
-        print("Connection established")
+        print("SMTP connection established")
+        print("Opening IMAP connection")
+        
+        imap_connect = imaplib.IMAP4_SSL("imap.gmail.com", port_imap)
+        print("IMAP connection established")
         print("You can now use the extra commands")
         while 1:
             user_input = input("Insert your command: ")
@@ -97,6 +110,11 @@ def connect(user_provider, user_email, user_password):
                 receiver_email, message = send()
                 server.sendmail(user_email, receiver_email, message)
                 print("Email Sent")
+            if can_command == 2:
+                    typ_imap, data_imap = imap_connect.search(None, 'ALL')  
+                    for num in data_imap[0].split():
+                        typ_imap, data_imap = imap_connect.search(num, data_imap[0][1])
+                        print ("Message %s\n%s\n" % (num, data_imap[0][1]))
 
 
 print("Welcome to PieCLIent!\nType help for a list of commands")
@@ -104,6 +122,6 @@ print("Type connect to log-in")
 
 while 1:
     user_input = input("Insert your command: ")
-    detect_input(user_input)
+    can_command = detect_input(user_input)
 
 
