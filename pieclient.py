@@ -59,13 +59,12 @@ def clear_screen():
 def send():
     receiver_email = input("Receiver email: ")
     subject = input("E-mail subject: ")
-    user_message = input("Type ypur message: ")
+    user_message = input("Type your message: ")
 
     # message = "From:" + user_email + "\n"
     # message += "To: " + receiver_email + "\n"
-    message = """Subject: """ + subject  + "Sent with PieCLIent"
+    message = """Subject: """ + subject  + "\n"+  user_message + "\nSent with PieCLIent"
 
-    
     return receiver_email, message
 
 
