@@ -3,6 +3,9 @@
 
 from os import system, name
 import ssl, smtplib, inspect, imaplib, getpass, email
+import poplib
+import string, random
+import io
 
 
 def detect_input(user_input):
@@ -29,12 +32,12 @@ def detect_input(user_input):
         if inspect.stack()[1][3] == "connect":
             return 1;
         else:
-            print("You must first login to use this command")
+            print("You must first connect to use this command")
     elif user_input in "list":
         if inspect.stack()[1][3] == "connect":
             return 2;
         else:
-            print("You must first login to use this command")
+            print("You must first connect to use this command")
     
     else:
         print("Invalid Command")
@@ -88,20 +91,20 @@ def list(user_email, user_password, port_imap):
     if len(mail_ids) == 0:
         print("You have no unread mails")
     else:
-        print("You have " + str(len(mail_ids)) + " unread emails")
-        id_list = mail_ids.split()   
-        first_email_id = int(id_list[0])
-        latest_email_id = int(id_list[-1])
+        print("You have " + str(len(mail_ids)) + "  emails")
+        # id_list = mail_ids.split()   
+        # first_email_id = int(id_list[0])
+        # latest_email_id = int(id_list[-1])
+        # for i in range(first_email_id, latest_email_id):
+        #     typ, data = imap_connect.fetch(str(i), '(RFC822)' )
+        #     for response_part in data:
+        #         if isinstance(response_part, tuple):
+        #             msg = email.message_from_string(str(response_part[1]))
+        #             email_subject =str(msg['subject']) 
+        #             email_from = str(msg['from'])
+        #             print ('From : ' + email_from + '\n')
+        #             print ('Subject : ' + email_subject + '\n')
 
-        for i in range(latest_email_id,first_email_id, -1):
-            typ, data = imap_connect.fetch(str(i), '(RFC822)' )
-            for response_part in data:
-                if isinstance(response_part, tuple):
-                    msg = email.message_from_string(str(response_part[1]))
-                    email_subject =str(msg['subject']) 
-                    email_from = str(msg['from'])
-                    print ('From : ' + email_from + '\n')
-                    print ('Subject : ' + email_subject + '\n')
 
 
 
@@ -122,28 +125,30 @@ def connect(user_provider, user_email, user_password):
 
         context = ssl.create_default_context()
 
-    print("Opening SMTP connection")
+    while 1:
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", port_smtp, context=context) as server:
-        server.login(user_email, user_password)
+        user_input = input("Insert your command: ")
+        can_command = detect_input(user_input)
 
-        print("SMTP connection established")
-       
-        print("You can now use the extra commands")
-        while 1:
-            user_input = input("Insert your command: ")
-            can_command = detect_input(user_input)
-            # Send email
-            if can_command == 1:
+        # Send email
+        if can_command == 1:
+            print("Opening SMTP connection")
+            with smtplib.SMTP_SSL("smtp.gmail.com", port_smtp, context=context) as server:
+                server.login(user_email, user_password)
+
+                print("SMTP connection established")
+            
+                print("You can now send e-mails")
                 receiver_email, message = send()
                 server.sendmail(user_email, receiver_email, message)
                 print("Email Sent")
-            # List Emails
-            if can_command == 2:
-                list(user_email, user_password, port_imap)
-                  
-                    
-
+                print("Disconnecting SMTP")
+                server.quit()
+        
+        # List Emails
+        if can_command == 2:
+            list(user_email, user_password, port_imap)
+        
 
 print("Welcome to PieCLIent!\nType help for a list of commands")
 print("Type connect to log-in")
