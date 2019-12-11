@@ -31,7 +31,7 @@ def send():
 
 
 def connect(user_provider, user_email, user_password):
-    if user_provider == "gmail":
+    if user_provider in "gmail":
         # Para ssl
         port = 465
         #starting a secure connection
@@ -56,7 +56,7 @@ def connect(user_provider, user_email, user_password):
 
 
 
-
+#main
 print("Welcome to PieCLIent!\nType help for a list of commands")
 
 while 1:
@@ -74,5 +74,3 @@ while 1:
     
     else:
         print("Invalid Command")
-
-
