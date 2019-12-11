@@ -85,21 +85,25 @@ def list(user_email, user_password, port_imap):
 
     type, data = imap_connect.search(None, 'ALL')
     mail_ids = data[0]
+    if len(mail_ids) == 0:
+        print("You have no unread mails")
+    else:
+        print("You have " + str(len(mail_ids)) + " unread emails")
+        id_list = mail_ids.split()   
+        first_email_id = int(id_list[0])
+        latest_email_id = int(id_list[-1])
 
-    id_list = mail_ids.split()   
-    first_email_id = int(id_list[0])
-    latest_email_id = int(id_list[-1])
+        for i in range(latest_email_id,first_email_id, -1):
+            typ, data = imap_connect.fetch(str(i), '(RFC822)' )
+            for response_part in data:
+                if isinstance(response_part, tuple):
+                    msg = email.message_from_string(str(response_part[1]))
+                    email_subject =str(msg['subject']) 
+                    email_from = str(msg['from'])
+                    print ('From : ' + email_from + '\n')
+                    print ('Subject : ' + email_subject + '\n')
 
-    for i in range(latest_email_id,first_email_id, -1):
-        typ, data = imap_connect.fetch(i, '(RFC822)' )
-        print("AQUI")
-        for response_part in data:
-            if isinstance(response_part, tuple):
-                msg = email.message_from_string(response_part[1])
-                email_subject = msg['subject']
-                email_from = msg['from']
-                print ('From : ' + email_from + '\n')
-                print ('Subject : ' + email_subject + '\n')
+
 
 def connect(user_provider, user_email, user_password):
 
