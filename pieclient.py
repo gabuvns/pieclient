@@ -1,9 +1,39 @@
 #PieCLIent
 #Email client with python3
 
-
 from os import system, name
-import ssl, smtplib
+import ssl, smtplib, inspect
+
+
+def detect_input(user_input):
+    if user_input in "help":
+        print_help()
+    elif  user_input in "clear":
+        clear_screen()
+
+    elif user_input in "quit":
+        print("Have a good day")
+        exit()
+  
+    elif user_input in "connect":
+        if inspect.stack()[1][3] == "connect":
+            print("You are alredy connected")
+        else:
+            # user_provider, user_email, user_password = get_user_credentials()
+            user_email = "tempacc767@gmail.com"
+            user_password = "Senhamuitoseguratp2@"
+            user_provider = "gmail"
+            connect(user_provider, user_email, user_password)
+
+    elif user_input in "send":
+        if inspect.stack()[1][3] == "connect":
+            return 1;
+        else:
+            print("You must first login to use this command")
+    
+    else:
+        print("Invalid Command")
+
 
 def get_user_credentials():
     user_provider = input("Type your provider: ")
@@ -29,11 +59,11 @@ def clear_screen():
 def send():
     receiver_email = input("Receiver email: ")
     subject = input("E-mail subject: ")
-    user_message = input("Digite sua mensagem: ")
+    user_message = input("Type ypur message: ")
 
     # message = "From:" + user_email + "\n"
     # message += "To: " + receiver_email + "\n"
-    message = """Subject: """ + subject  
+    message = """Subject: """ + subject  + "Sent with PieCLIent"
 
     
     return receiver_email, message
@@ -63,34 +93,19 @@ def connect(user_provider, user_email, user_password):
         print("You can now use the extra commands")
         while 1:
             user_input = input("Insert your command: ")
-            if user_input in "send":
+            can_command = detect_input(user_input)
+            # Send email
+            if can_command == 1:
                 receiver_email, message = send()
                 server.sendmail(user_email, receiver_email, message)
                 print("Email Sent")
 
 
 print("Welcome to PieCLIent!\nType help for a list of commands")
+print("Type connect to log-in")
 
 while 1:
-    user_input = input("Insert your command: ") 
-    if user_input in "help":
-        print_help()
-
-    elif user_input in "connection":
-        # user_provider, user_email, user_password = get_user_credentials()
-        user_email = "tempacc767@gmail.com"
-        user_password = "Senhamuitoseguratp2@"
-        user_provider = "gmail"
-        connect(user_provider, user_email, user_password)
-    
-    elif  user_input in "clear":
-        clear_screen()
-
-    elif user_input in "quit":
-        print("Have a good day")
-        exit()
-    
-    else:
-        print("Invalid Command")
+    user_input = input("Insert your command: ")
+    detect_input(user_input)
 
 
