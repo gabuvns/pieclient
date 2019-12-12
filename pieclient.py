@@ -9,6 +9,9 @@ import ssl, smtplib, inspect, imaplib, getpass, email
 def detect_input(user_input):
     if user_input in "help":
         print_help()
+    
+    elif user_input in "localserver_test":
+        test()
     elif  user_input in "clear":
         clear_screen()
 
@@ -40,6 +43,25 @@ def detect_input(user_input):
     else:
         print("Invalid Command")
 
+def test():
+    clear_screen()
+    print("TEST MODE INITIATED")
+    print("Using: testpython@test.com as sender")
+    print("Using bla@test.com as receiver")
+    
+    subject = input("E-mail subject: ")
+    user_message = input("Type your message: ")
+
+    with smtplib.SMTP("localhost", 1025) as server:
+        FROM = "testpython@test.com"
+        TO = "bla@test.com"
+        MSG = """Subject: """ + subject  + "\n"+  user_message + "\nSent with PieCLIent"
+        server.sendmail(FROM, TO, MSG)
+        print("email sent")
+        # user_email = 'tempacc767@gmail.com'
+        # user_password = 'Senhamuitoseguratp2@'
+        # server.login(user_email, user_password)
+
 def get_user_credentials():
     user_provider = input("Type your provider: ")
     user_email = input("Type your email: ")
@@ -51,6 +73,7 @@ def print_help():
     print("set - define if it will use POP3 or IMAP, impap is used by default")
     print("clear - clears the screen" )
     print("exit - quits de program")
+    print("localserver_test - enters test mode with, must connect to 'localhost' on port 1025")
     print("You must first connect for the following commands:")
     print("send - sends an email")
     print("list - lists your emails")
