@@ -1,5 +1,5 @@
 import smtpd
-import asyncore
+import asyncore, ssl
 
 class CustomSMTPServe(smtpd.SMTPServer):
    def process_message(self, peer, mailfrom, rcpttos, data):
@@ -10,7 +10,11 @@ class CustomSMTPServe(smtpd.SMTPServer):
     
 
 def run():
-    foo = CustomSMTPServe(('localhost', 1025), None)
+    try:
+        foo = CustomSMTPServe(('localhost', 1025), None)
+    except:
+        print("Deu ruim")
+
     print("Flag")
     asyncore.loop()
 

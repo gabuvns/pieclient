@@ -4,8 +4,6 @@
 from os import system, name
 import ssl, smtplib, inspect, imaplib, getpass, email
 
-
-
 def detect_input(user_input):
     if user_input in "help":
         print_help()
@@ -22,7 +20,7 @@ def detect_input(user_input):
     elif user_input in "connect":
         if inspect.stack()[1][3] == "connect":
             print("You are alredy connected")
-        else:
+        else:   
             # user_provider, user_email, user_password = get_user_credentials()
             user_email = "tempacc767@gmail.com"
             user_password = "Senhamuitoseguratp2@"
