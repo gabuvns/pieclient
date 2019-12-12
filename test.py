@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import smtplib
+import smtplib,  ssl
 
 def send():
     print("======================================================================")
@@ -24,12 +24,13 @@ def connect():
         TO = "bla@test.com"
         MSG = "Subject: Test email python\n\nBody of your message!"
         server.sendmail(FROM, TO, MSG)
-
+        print("email sent")
         # user_email = 'tempacc767@gmail.com'
         # user_password = 'Senhamuitoseguratp2@'
         # server.login(user_email, user_password)
 
-    print("Connected")
+  
+
 
 
 def begin():
